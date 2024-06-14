@@ -14,6 +14,7 @@ export default class ProfileRender {
         this.member = target;
 
         GlobalFonts.registerFromPath(path.resolve('assets/profile/fonts', 'Raleway-Bold.ttf'), 'Raleway');
+        GlobalFonts.registerFromPath(path.resolve('assets/profile/fonts', 'Highliner regular.otf'), 'Highliner');
     }
 
     public async render() {
@@ -29,6 +30,9 @@ export default class ProfileRender {
         // Stats
         this._drawStats();
         this._drawBalance();
+        // Level
+        this._drawLevel();
+        this._drawLevelBar(1700, 1800);
 
         const buffer = await this.canvas.encode('png');
         const attachment = new AttachmentBuilder(buffer, { name: 'profile.png' });
@@ -77,15 +81,10 @@ export default class ProfileRender {
     }
 
     private _drawStats() {
-        const fontSize = 48.54;
-        const fontFamily = 'Raleway';
-        const fontWeight = 900;
-        const fontColor = '#FFFFFF';
-        const textAlign = 'right';
-
-        this.context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-        this.context.fillStyle = fontColor;
-        this.context.textAlign = textAlign;
+        let fontSize = 48.54;
+        this.context.font = `900 ${fontSize}px Raleway`;
+        this.context.fillStyle = '#fff';
+        this.context.textAlign = 'right';
 
         const messageCount = '5512';
         const online = '12ч. 30м. 52сек.';
@@ -96,23 +95,71 @@ export default class ProfileRender {
         this.context.fillText(online, 1699.41 + 285, 721.28 + fontSize);
         this.context.fillText(top, 699.56 + 209, 935.15 + fontSize);
         this.context.fillText(reputation, 1837.98 + 373, 934.66 + fontSize);
+
+        // reputation
+        fontSize = 150.77;
+        this.context.font = `400 ${fontSize}px Highliner`;
+        const likes = '17';
+        const dislikes = '12';
+
+        this.context.fillText(likes, 888 + 75.39, 220 + fontSize);
+        this.context.fillText(dislikes, 1581.88 + 75.39, 213 + fontSize);
     }
 
     private _drawBalance() {
         const fontSize = 80;
-        const fontFamily = 'Raleway';
-        const fontWeight = 700;
-        const fontColor = '#FFFFFF';
-        const textAlign = 'right';
-
-        this.context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-        this.context.fillStyle = fontColor;
-        this.context.textAlign = textAlign;
+        this.context.font = `700 ${fontSize}px Raleway`;
+        this.context.fillStyle = '#fff';
+        this.context.textAlign = 'right';
 
         const standardCurrency = '8910';
         const donateCurrency = '2785';
 
         this.context.fillText(standardCurrency, 412 + 164, 281.71 + fontSize);
         this.context.fillText(donateCurrency, 1969.74 + 160, 281.71 + fontSize);
+    }
+
+    private _drawLevel() {
+        const fontSize = 265.24;
+        this.context.font = `400 ${fontSize}px Highliner`;
+        this.context.fillStyle = '#8C8C8C';
+        this.context.textAlign = 'center';
+
+        const level = '5';
+        const x = 1242 + 88 / 2;
+        const y = (941.38 + fontSize / 2) + 100;
+
+        this.context.fillText(level, x, y);
+    }
+
+    private _drawLevelBar(currentExperience: number, requiredExperience: number) {
+        const startX = 142.55;
+        const startY = 1259.54;
+        const barWidth = 829.45;
+        const barHeight = 7;
+        const lineWidth = 5.44;
+        const angle = -0.02; // Угол поворота в радианах
+
+        // Рассчитываем конечную точку линии прогресса
+        const progressRatio = currentExperience / requiredExperience;
+        const progressWidth = barWidth * progressRatio;
+        const endX = startX + progressWidth;
+        const endY = startY;
+
+        this.context.save();
+        this.context.strokeStyle = '#8C8C8C';
+        this.context.lineWidth = lineWidth;
+
+        // Переводим координаты начала линии в центр ее поворота
+        this.context.translate(startX, startY);
+        // Поворачиваем контекст на указанный угол
+        this.context.rotate(angle * Math.PI / 180); // Преобразуем угол в радианы
+        // Рисуем горизонтальную линию от начальной точки до конечной
+        this.context.beginPath();
+        this.context.moveTo(0, 0);
+        this.context.lineTo(endX - startX, 0);
+        this.context.stroke();
+
+        this.context.restore();
     }
 }
