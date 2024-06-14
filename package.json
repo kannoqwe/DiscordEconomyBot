@@ -8,7 +8,8 @@
   "scripts": {
     "lint": "eslint ./src --ext .ts",
     "lint:fix": "eslint ./src --fix --ext .ts",
-    "start": "rimraf dist && npx tsc && node dist/index.js"
+    "dev": "rimraf dist && npx tsc && node dist/index.js",
+    "build": "rimraf dist && npx tsc"
   },
   "imports": {
     "#entities/*": "./dist/entities/*.js",
@@ -18,6 +19,7 @@
     "dist"
   ],
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.53",
     "discord.js": "^14.14.1",
     "error-stack-parser": "^2.1.4",
     "kleur": "^4.1.5",
@@ -28,7 +30,8 @@
     "parse-color": "^1.0.0",
     "reflect-metadata": "^0.2.1",
     "rimraf": "^5.0.5",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "undici": "^6.18.2"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",

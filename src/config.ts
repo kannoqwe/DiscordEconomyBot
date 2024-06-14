@@ -9,6 +9,14 @@ export default {
 
     developers: ['393722994393874441'],
 
+    database : {
+        host: '62.109.11.15',
+        port: 3306,
+        database: 'ever',
+        username: 'kannoqwe',
+        password: 'qwekannozxc'
+    },
+
     emoji: {
         boarder: '> ',
         dot: '・',
@@ -52,6 +60,10 @@ export default {
             name: 'Монеты',
             emoji: ':coin:'
         },
+        donate: {
+            name: 'Донаты',
+            emoji: ':coin:'
+        },
 
         // Временная награда
         timely: {
@@ -68,8 +80,11 @@ export default {
         },
         
         games: {
+            // мин ставка
             min: 50,
+            // макс ставка
             max: 5000,
+            // комиссия
             commission: 7,
             // Время через сколько отменяется игра
             timestamp: 3600
@@ -80,7 +95,7 @@ export default {
         // Цена создания
         price: 5000,
         // Налог (Раз в месяц)
-        tax: 4000,
+        tax: 5000,
         // Процент, идущий владельцу после покупки роли, это 25%
         purchasePercent: 0.25,
         // Минимальная цена в магазине
@@ -98,7 +113,7 @@ export default {
 
     roles: {
         parents: {
-            // Сверху этой роли создаются личные роли
+            // Выше этой роли создаются личные роли
             personalRoles: '1042183170155622401'
         }
     },
