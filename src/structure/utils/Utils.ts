@@ -13,6 +13,7 @@ import {
 } from 'discord.js';
 import IModal from '../interfaces/utils/IModal';
 import parseColor from 'parse-color';
+import { bold } from 'kleur';
 
 export default class Utils {
     static async scanDirectory(directory: string): Promise<string[]> {
@@ -136,11 +137,21 @@ export default class Utils {
         return msg.edit({ components: updatedComponents });
     }
 
-    static async sendUser(user: User | GuildMember, options: MessageCreateOptions): Promise<boolean> {
-        return user.send(options)
-            .then(() => true)
-            .catch(() => false);
+    static convertOnline(seconds: number, mention: boolean = false) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
+
+        let formattedTime = '';
+
+        if (hours) formattedTime += `${mention ? bold(hours.toString()) : hours}ч. `;
+        if (minutes || hours) formattedTime += `${mention ? bold(minutes.toString()) : minutes}м. `;
+
+        formattedTime += `${mention ? bold(remainingSeconds.toString()) : remainingSeconds}сек.`;
+
+        return formattedTime.trim() === 'сек.' ? `${mention ? bold('0') : '0'}сек.` : formattedTime;
     }
+
 
     static selectUserComponents(custom_id: string, placeholder?: string) {
         return {

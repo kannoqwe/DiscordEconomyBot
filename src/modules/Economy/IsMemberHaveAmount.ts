@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import UserEntity from '#entities/UserEntity';
+import UserEntity from '#entities/UsersEntity';
 
 export default async function IsUserHaveAmount (userId: Snowflake, amount: number) {
     const row = await UserEntity.findOrCreate({ userId });

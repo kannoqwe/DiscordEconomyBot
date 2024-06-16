@@ -1,7 +1,7 @@
 import ITransaction from './interfaces/ITransaction';
 import TransactionsTypes from '../../types/TransactionsType';
 import { Snowflake } from 'discord.js';
-import UserEntity from '#entities/UserEntity';
+import UserEntity from '#entities/UsersEntity';
 import TransactionEntity from '#entities/TransactionEntity';
 import { Utils } from '#structure';
 

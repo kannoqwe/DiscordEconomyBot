@@ -1,6 +1,6 @@
 import { AppCommand } from '#structure';
 import { CommandInteraction, ApplicationCommandOptionType, GuildMember, codeBlock, EmbedBuilder } from 'discord.js';
-import UserEntity from '#entities/UserEntity';
+import UserEntity from '#entities/UsersEntity';
 import Config from '../../config';
 
 export default class Balance extends AppCommand {

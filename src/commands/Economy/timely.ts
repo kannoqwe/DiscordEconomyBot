@@ -1,6 +1,6 @@
 import { AppCommand, Config, Utils } from '../../structure';
 import { CommandInteraction, EmbedBuilder } from 'discord.js';
-import UserEntity from '#entities/UserEntity';
+import UserEntity from '#entities/UsersEntity';
 import Transaction from '../../classes/Transaction/Transaction';
 
 export default class Timely extends AppCommand {
