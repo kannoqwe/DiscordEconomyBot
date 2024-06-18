@@ -1,10 +1,9 @@
 import { AppCommand, Config, Random, Utils } from '../../structure';
 import { ApplicationCommandOptionType, CommandInteraction, GuildMember, EmbedBuilder, APIMessageComponentEmoji, ButtonInteraction, User } from 'discord.js';
-import hasActiveGame from '../../modules/Games/HasActiveGame';
-import generateMessageLink from '../../modules/Games/GenerateMessageLink';
 import IsUserHaveAmount from '../../modules/Economy/IsMemberHaveAmount';
 import AmountWithCommission from '../../modules/Economy/AmountWithCommission';
 import Transaction from '../../classes/Transaction/Transaction';
+import ActiveGame from '../../classes/Games/ActiveGame';
 
 export default class DuelCmd extends AppCommand {
     constructor() {
@@ -33,8 +32,9 @@ export default class DuelCmd extends AppCommand {
             .setTitle('Сыграть дуэль')
             .setColor(Config.colors.main)
             .setThumbnail(interaction.user.displayAvatarURL());
-        
-        if (!await this._checks(interaction, amount, embed)) return;
+
+        const game = new ActiveGame(this.client, interaction.member);
+        if (!await this._checks(interaction, amount, embed, game)) return;
         if (interaction.user.id === member?.id) {
             embed.setDescription(`${interaction.user.toString()}, вы не можете играть самим **собой**.`);
             return interaction.reply({ embeds: [embed], ephemeral: true });
@@ -42,11 +42,7 @@ export default class DuelCmd extends AppCommand {
 
         await interaction.deferReply();
         const message = await interaction.fetchReply();
-        this.client.activeGames.set(interaction.user.id, {
-            channelId: interaction.channel!.id,
-            messageId: message.id,
-            timestamp: Utils.unixTime() + Config.currency.games.timestamp
-        }); 
+        game.create(message);
 
         const description: string = `хочет поиграть с ${member ? member.toString() : 'кем-нибудь'} на`;
         embed.setDescription(`${interaction.user.toString()} ${description} **${amount} ${this.client.walletEmoji}**`);
@@ -66,8 +62,8 @@ export default class DuelCmd extends AppCommand {
             filter: async (i) => {
                 return (
                     (i.customId === 'decline' && i.user.id === interaction.user.id) ||
-                    (i.customId === 'join' && member && i.user.id === member.id && await this._checks(i as ButtonInteraction, amount, embed)) ||
-                    (i.customId === 'join' && !member && this._checks(i as ButtonInteraction, amount, embed))
+                    (i.customId === 'join' && member && i.user.id === member.id && await this._checks(i as ButtonInteraction, amount, embed, game)) ||
+                    (i.customId === 'join' && !member && this._checks(i as ButtonInteraction, amount, embed, game))
                 );
             },            
             time: 2 * 60000,
@@ -121,14 +117,14 @@ export default class DuelCmd extends AppCommand {
                     await int.editReply({ embeds: [duelEmbed] });
                     break;
                 case 'decline':
-                    this.client.activeGames.delete(interaction.user.id);
+                    game.end();
                     await message.delete();
                     break;
             }
         });
         
         collector.on('end', (_, reason) => {
-            this.client.activeGames.delete(interaction.user.id);
+            game.end();
             if (reason === 'time') {
                 embed.setDescription(`${interaction.user.toString()}, никто не ответил **вовремя**.`);
                 interaction.editReply({ embeds: [embed] });
@@ -136,10 +132,9 @@ export default class DuelCmd extends AppCommand {
         });
     }
 
-    private async _checks(interaction: ButtonInteraction | CommandInteraction, amount: number, embed: EmbedBuilder): Promise<boolean> {
-        if (await hasActiveGame(this.client, interaction.user.id)) {
-            const link = generateMessageLink(this.client, interaction.user.id);
-            embed.setDescription(`${interaction.user.toString()}, у вас уже есть [активная игра](${link}).`);
+    private async _checks(interaction: ButtonInteraction | CommandInteraction, amount: number, embed: EmbedBuilder, game: ActiveGame): Promise<boolean> {
+        if (game.check()) {
+            embed.setDescription(game.description);
             await interaction.reply({ embeds: [embed], ephemeral: true });
             return false;
         }

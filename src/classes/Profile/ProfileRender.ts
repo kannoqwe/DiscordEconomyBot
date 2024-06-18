@@ -75,7 +75,7 @@ export default class ProfileRender {
         const x = 1120;
         const y = 171;
 
-        this.context.save(); // Save the current state of the context
+        this.context.save();
         this.context.beginPath();
         this.context.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2, true);
         this.context.closePath();

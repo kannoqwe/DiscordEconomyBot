@@ -8,7 +8,7 @@ export default class MessageDeleteEvent extends Event {
 
     execute(message: Message) {
         this.client.activeGames = this.client.activeGames.filter(
-            (activeGame) => activeGame.messageId !== message.id
+            (activeGame) => activeGame.message.id !== message.id
         );
     }
 }

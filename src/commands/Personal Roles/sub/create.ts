@@ -6,11 +6,15 @@ import CalculatePrice from '../../../modules/PersonalRoles/CalculatePrice';
 import Confirmation from '../../../structure/abstracts/Confirmation';
 import CreateRole from '../../../modules/PersonalRoles/CreateRole';
 import Transaction from '../../../classes/Transaction/Transaction';
-import CheckActiveGame from '../../../modules/Games/CheckActiveGame';
+import ActiveGame from '../../../classes/Games/ActiveGame';
 
 class CreateConfirmation extends Confirmation {
     async doSuccessfully(name: string, color: string, price: number) {
-        if (await CheckActiveGame(this.embed.data.title || 'Ошибка', this.client, this.interaction, this.interaction.user)) return;
+        const game = new ActiveGame(this.client, this.interaction.member as GuildMember);
+        if (game.check()) {
+            this.embed.setDescription(game.description);
+            return this.interaction.editReply({ embeds: [this.embed], components: [] });
+        }
         if (!await IsUserHaveAmount(this.interaction.user.id, price)) {
             this.embed.setDescription(`${this.interaction.user.toString()}, для создание **личной роли** необходимо **${price} ${this.client.walletEmoji}**`);
             return this.interaction.editReply({ embeds: [this.embed], components: [] });
@@ -58,7 +62,11 @@ export default class RoleCreate extends SubCommand {
             embed.setDescription(`${interaction.user.toString()}, на сервере достигнут **лимит** по колличеству **ролей**.`);
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
-        if (await CheckActiveGame(embed.data.title || 'Ошибка', this.client, interaction, interaction.user)) return;
+        const game = new ActiveGame(this.client, interaction.member);
+        if (game.check()) {
+            embed.setDescription(game.description);
+            return interaction.reply({ embeds: [embed], ephemeral: true });
+        }
         if (!Utils.resolveColor(color)) {
             embed.setDescription(`${interaction.user.toString()}, Вы ввели **неверный** цвет роль. [Примеры](https://colorscheme.ru/html-colors.html)`);
             return interaction.reply({ embeds: [embed], ephemeral: true });

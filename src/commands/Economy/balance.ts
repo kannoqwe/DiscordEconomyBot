@@ -23,10 +23,16 @@ export default class Balance extends AppCommand {
             embeds: [new EmbedBuilder()
                 .setTitle(`Баланс — ${target.displayName}`)
                 .setColor(Config.colors.main)
-                .addFields({
-                    name: `${Config.emoji.boarder} ${Config.currency.wallet.name}:`,
-                    value: codeBlock(row.balance.toLocaleString('en-US').replace(/,/g, ' '))
-                })
+                .addFields(
+                    {
+                        name: `${Config.emoji.boarder} ${Config.currency.wallet.name}:`,
+                        value: codeBlock(row.balance.toLocaleString('en-US'))
+                    },
+                    {
+                        name: `${Config.emoji.boarder} ${Config.currency.donate.name}`,
+                        value: codeBlock(row.donate.toLocaleString('en-US'))
+                    }
+                )
                 .setThumbnail(target.displayAvatarURL())
             ]
         });

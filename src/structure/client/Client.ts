@@ -5,9 +5,9 @@ import MsgCommandHandler from '../handlers/MsgCommand';
 import Database from '../utils/Database';
 import AppCommandHandler from '../handlers/AppCommand';
 import Config from '../../config';
-import IActiveGame from '../interfaces/client/misc/IActiveGame';
 import EventHandler from '../handlers/Event';
 import ErrorHandler from '../handlers/Error';
+import ActiveGame from '../../classes/Games/ActiveGame';
 
 export default class Client extends DSClient<true> {
     public token: string;
@@ -17,7 +17,7 @@ export default class Client extends DSClient<true> {
     public ErrorHandler: ErrorHandler = new ErrorHandler(this);
 
     public walletEmoji: string = Config.currency.wallet.emoji;
-    public activeGames: Collection<Snowflake, IActiveGame> = new Collection();
+    public activeGames: Collection<Snowflake, ActiveGame> = new Collection();
 
     constructor(options: IClient) {
         super(options);

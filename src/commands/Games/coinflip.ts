@@ -1,10 +1,9 @@
 import { AppCommand, Config, Random, Utils } from '../../structure';
 import { ApplicationCommandOptionType, ButtonInteraction, CommandInteraction, EmbedBuilder } from 'discord.js';
 import IsUserHaveAmount from '../../modules/Economy/IsMemberHaveAmount';
-import generateMessageLink from '../../modules/Games/GenerateMessageLink';
-import hasActiveGame from '../../modules/Games/HasActiveGame';
 import Transaction from '../../classes/Transaction/Transaction';
 import AmountWithCommission from '../../modules/Economy/AmountWithCommission';
+import ActiveGame from '../../classes/Games/ActiveGame';
 
 export default class Coinflip extends AppCommand {
     constructor() {
@@ -26,10 +25,10 @@ export default class Coinflip extends AppCommand {
             .setTitle('Сыграть в монетку')
             .setColor(Config.colors.main)
             .setThumbnail(interaction.user.displayAvatarURL());
-        
-        if (await hasActiveGame(this.client, interaction.user.id)) {
-            const link = generateMessageLink(this.client, interaction.user.id);
-            embed.setDescription(`${interaction.user.toString()}, у вас уже есть [активная игра](${link}).`);
+
+        const game = new ActiveGame(this.client, interaction.member);
+        if (game.check()) {
+            embed.setDescription(game.description);
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
         if (!await IsUserHaveAmount(interaction.user.id, amount)) {
@@ -40,11 +39,7 @@ export default class Coinflip extends AppCommand {
         await interaction.deferReply();
         const message = await interaction.fetchReply();
 
-        this.client.activeGames.set(interaction.user.id, {
-            channelId: interaction.channel!.id,
-            messageId: message.id,
-            timestamp: Utils.unixTime() + Config.currency.games.timestamp
-        });
+        game.create(message);
 
         embed.setDescription(`${interaction.user.toString()}, выберите **сторону** на которую хотите поставить ваши **${amount} ${this.client.walletEmoji}**`);
         await interaction.editReply({
@@ -104,13 +99,13 @@ export default class Coinflip extends AppCommand {
                                 Вы ${winner ? 'выиграли' : 'проиграли'} **${winner ? amountWithCommission : amount} ${this.client.walletEmoji}**`);
                 await interaction.editReply({ embeds: [embed] });
             }
-            this.client.activeGames.delete(interaction.user.id);
+            game.end();
             if (int.customId === 'cancel') await message.delete();
         });
 
         collector.on('end', async (_, reason) => {
             if (reason === 'time') {
-                this.client.activeGames.delete(interaction.user.id);
+                game.end();
                 embed.setDescription(`${interaction.user.toString()}, **время** на ответ **вышло**`);
                 await interaction.editReply({ embeds: [embed] });
             }

@@ -4,14 +4,12 @@ import { default as absConfirmation } from '../../structure/abstracts/Confirmati
 import Transaction from '../../classes/Transaction/Transaction';
 import IsUserHaveAmount from '../../modules/Economy/IsMemberHaveAmount';
 import AmountWithCommission from '../../modules/Economy/AmountWithCommission';
-import generateMessageLink from '../../modules/Games/GenerateMessageLink';
-import hasActiveGame from '../../modules/Games/HasActiveGame';
+import ActiveGame from '../../classes/Games/ActiveGame';
 
 class Confirmation extends absConfirmation {
-    async doSuccessfully(member: GuildMember, amount: number) {
-        if (await hasActiveGame(this.client, this.interaction.user.id)) {
-            const link = generateMessageLink(this.client, this.interaction.user.id);
-            this.embed.setDescription(`${this.interaction.user.toString()}, у вас есть [активная игра](${link}).`);
+    async doSuccessfully(member: GuildMember, amount: number, game: ActiveGame) {
+        if (game.check()) {
+            this.embed.setDescription(game.description);
             return this.interaction.reply({ embeds: [this.embed], ephemeral: true });
         }
         if (!await Transaction.withdraw({
@@ -70,9 +68,9 @@ export default class Give extends AppCommand {
             .setColor(Config.colors.main)
             .setThumbnail(interaction.user.displayAvatarURL());
 
-        if (await hasActiveGame(this.client, interaction.user.id)) {
-            const link = generateMessageLink(this.client, interaction.user.id);
-            embed.setDescription(`${interaction.user.toString()}, у вас есть [активная игра](${link}).`);
+        const game = new ActiveGame(this.client, interaction.member);
+        if (game.check()) {
+            embed.setDescription(game.description);
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
         if (!await IsUserHaveAmount(interaction.user.id, amount)) {
@@ -88,6 +86,6 @@ export default class Give extends AppCommand {
             title: embed.data.title ?? 'error',
             description: `вы **уверены** что хотите передать **${amount} ${this.client.walletEmoji}** пользователю ${member.toString()}.`,
             confirmingUser: interaction.member as GuildMember
-        }).setup(member, amount);
+        }).setup(member, amount, game);
     }
 }
