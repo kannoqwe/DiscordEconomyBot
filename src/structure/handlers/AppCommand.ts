@@ -27,7 +27,7 @@ export default class AppCommandHandler extends BaseHandler {
             await this._deleteOldCommands();
             this.client.on('interactionCreate', async (interaction) => {
                 if (interaction.guild?.id !== Config.guild) return;
-                if (interaction.isCommand()) await this._runCommand(interaction as ChatInputCommandInteraction<'cached'>);
+                if (interaction.isCommand()) await this._runCommand(interaction as ChatInputCommandInteraction);
             });
         });
     }
@@ -67,7 +67,7 @@ export default class AppCommandHandler extends BaseHandler {
         }
     }
 
-    private _convertOptionsToObject(interaction: CommandInteraction<'cached'>) {
+    private _convertOptionsToObject(interaction: CommandInteraction) {
         const options: Record<string, any> = {};
         for (const option of interaction.options.data) {
             if (option.type === ApplicationCommandOptionType.Subcommand && option.options) {
@@ -89,7 +89,7 @@ export default class AppCommandHandler extends BaseHandler {
         return options;
     }
 
-    private async _runCommand(interaction: ChatInputCommandInteraction<'cached'>) {
+    private async _runCommand(interaction: ChatInputCommandInteraction) {
         const command: AppCommand | undefined = this.appCommands.get(`${interaction.commandName} ${interaction.options.getSubcommand(false)}`)
             ?? this.appCommands.get(interaction.commandName);
         if (!command) return;
@@ -99,6 +99,6 @@ export default class AppCommandHandler extends BaseHandler {
             && !Config.commandsChannel.includes(interaction.channel.id)) return;
         if (!Permissions.check(interaction.member as GuildMember, command.permissions)) return;
 
-        command.execute(interaction, this._convertOptionsToObject(interaction as CommandInteraction<'cached'>));
+        command.execute(interaction, this._convertOptionsToObject(interaction as CommandInteraction));
     }
 }

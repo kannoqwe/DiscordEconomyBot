@@ -25,6 +25,6 @@ export default abstract class AppCommand extends BaseModule {
         this.ignore = args?.ignore ?? false;
         this.permissions = args?.permissions || [];
     }
-    abstract execute(interaction: CommandInteraction<'cached'>, args: Record<string, any>): any;
+    abstract execute(interaction: CommandInteraction, args: Record<string, any>): any;
 }
 
