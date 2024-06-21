@@ -10,6 +10,7 @@ type TransactionsTypes = 'TIMELY'
                         | 'DUEL_LOSE'
                         | 'PROLE_CREATE'
                         | 'REFUND_PROLE'
-                        | 'PROLE_GIVE';
+                        | 'PROLE_GIVE'
+                        | 'COUPLE_CREATE';
 
 export default TransactionsTypes;

@@ -91,6 +91,13 @@ export default {
         }
     },
 
+    couple: {
+        // Цена создания
+        price: 2000,
+        // Налог (Раз в месяц)
+        tax: 2000
+    },
+
     personalRoles: {
         // Цена создания
         price: 5000,

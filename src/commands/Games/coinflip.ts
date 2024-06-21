@@ -1,6 +1,6 @@
 import { AppCommand, Config, Random, Utils } from '../../structure';
 import { ApplicationCommandOptionType, ButtonInteraction, CommandInteraction, EmbedBuilder } from 'discord.js';
-import IsUserHaveAmount from '../../modules/Economy/IsMemberHaveAmount';
+import IsUserHaveAmount from '../../modules/Economy/HasBalance';
 import Transaction from '../../classes/Transaction/Transaction';
 import AmountWithCommission from '../../modules/Economy/AmountWithCommission';
 import ActiveGame from '../../classes/Games/ActiveGame';

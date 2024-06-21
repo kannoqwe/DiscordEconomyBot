@@ -2,7 +2,7 @@ import { AppCommand, Config } from '#structure';
 import { ApplicationCommandOptionType, CommandInteraction, EmbedBuilder, GuildMember } from 'discord.js';
 import { default as absConfirmation } from '../../structure/abstracts/Confirmation';
 import Transaction from '../../classes/Transaction/Transaction';
-import IsUserHaveAmount from '../../modules/Economy/IsMemberHaveAmount';
+import IsUserHaveAmount from '../../modules/Economy/HasBalance';
 import AmountWithCommission from '../../modules/Economy/AmountWithCommission';
 import ActiveGame from '../../classes/Games/ActiveGame';
 

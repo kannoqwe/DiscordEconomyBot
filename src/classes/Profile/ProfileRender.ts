@@ -44,6 +44,9 @@ export default class ProfileRender {
         if (this.user.couple) {
             await this._drawCouple();
         }
+        if (this.user.profile === 'CLOUD' || this.user.profile === 'JAPAN') {
+            await this._drawMisc();
+        }
 
         const buffer = await this.canvas.encode('png');
         return new AttachmentBuilder(buffer, { name: 'profile.png' });
@@ -276,5 +279,14 @@ export default class ProfileRender {
         this.context.beginPath();
         this.context.arc(144.9615 + x, 1275.5465, 21.0387, 0, Math.PI * 2);
         this.context.fill();
+    }
+
+    private async _drawMisc() {
+        const image = await loadImage(path.resolve('assets/profile/misc', `${this.user.profile.toLowerCase()}.png`));
+        if (this.user.profile === 'CLOUD') {
+            this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
+        } else {
+            this.context.drawImage(image, 0, 925, 716 / 1.3, 697 / 1.3);
+        }
     }
 }

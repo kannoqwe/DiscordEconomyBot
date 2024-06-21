@@ -1,7 +1,7 @@
 import PersonalRolesEntity from '#entities/PersonalRoles';
 import { SubCommand, Config, Utils } from '../../../structure';
 import { CommandInteraction, EmbedBuilder, GuildMember } from 'discord.js';
-import IsUserHaveAmount from '../../../modules/Economy/IsMemberHaveAmount';
+import IsUserHaveAmount from '../../../modules/Economy/HasBalance';
 import CalculatePrice from '../../../modules/PersonalRoles/CalculatePrice';
 import Confirmation from '../../../structure/abstracts/Confirmation';
 import CreateRole from '../../../modules/PersonalRoles/CreateRole';
