@@ -3,6 +3,7 @@ import BaseEntity from '../structure/client/base/BaseEntity';
 import { Snowflake } from 'discord.js';
 import Profiles from '../types/ProfileType';
 import Frames from '../types/FrameType';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Entity('users')
 export default class UsersEntity extends BaseEntity {
@@ -12,7 +13,7 @@ export default class UsersEntity extends BaseEntity {
     @Column()
         userId!: Snowflake;
 
-    @Column({ default: 0, type: 'bigint' })
+    @Column({ default: 0 })
         balance!: number;
     @Column({ default: 0 })
         donate!: number;
@@ -29,4 +30,8 @@ export default class UsersEntity extends BaseEntity {
     
     @Column({ default: 0 })
         timelyTime!: number;
+
+    async update(options: QueryDeepPartialEntity<UsersEntity>) {
+        return UsersEntity.update({ id: this.id }, options);
+    }
 }

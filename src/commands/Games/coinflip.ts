@@ -1,5 +1,11 @@
 import { AppCommand, Config, Random, Utils } from '../../structure';
-import { ApplicationCommandOptionType, ButtonInteraction, CommandInteraction, EmbedBuilder } from 'discord.js';
+import {
+    ActionRowBuilder,
+    ApplicationCommandOptionType, ButtonBuilder,
+    ButtonInteraction, ButtonStyle,
+    CommandInteraction,
+    EmbedBuilder
+} from 'discord.js';
 import IsUserHaveAmount from '../../modules/Economy/HasBalance';
 import Transaction from '../../classes/Transaction/Transaction';
 import AmountWithCommission from '../../modules/Economy/AmountWithCommission';
@@ -45,19 +51,13 @@ export default class Coinflip extends AppCommand {
         await interaction.editReply({
             embeds: [embed],
             components: [
-                {
-                    type: 1,
-                    components: [
-                        { type: 2, label: 'Орел', style: 2, custom_id: 'eagle' },
-                        { type: 2, label: 'Решка', style: 2, custom_id: 'tail' }
-                    ]
-                },
-                {
-                    type: 1,
-                    components: [
-                        { type: 2, label: 'Отмена', style: 4, custom_id: 'cancel' }
-                    ]
-                }
+                new ActionRowBuilder<ButtonBuilder>().addComponents(
+                    new ButtonBuilder().setLabel('Орел').setStyle(ButtonStyle.Secondary).setCustomId('eagle'),
+                    new ButtonBuilder().setLabel('Решка').setStyle(ButtonStyle.Secondary).setCustomId('tail')
+                ),
+                new ActionRowBuilder<ButtonBuilder>().addComponents(
+                    new ButtonBuilder().setLabel('Отмена').setStyle(ButtonStyle.Danger).setCustomId('cancel')
+                )
             ] 
         });
 

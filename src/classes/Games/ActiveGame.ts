@@ -25,10 +25,14 @@ export default class ActiveGame {
     }
 
     get description() {
-        if (!this.message) {
+        const game = this.client.activeGames.get(this.member.id);
+        if (!game) {
+            throw new Error('Game not found');
+        }
+        if (!game.message) {
             throw new Error('Message not found');
         }
-        const link = `https://discord.com/channels/${Config.guild}/${this.message.channel.id}/${this.message.id}`;
+        const link = `https://discord.com/channels/${Config.guild}/${game.message.channel.id}/${game.message.id}`;
         return `${this.member.toString()}, у вас есть [активная игра](${link}).`;
     }
 }

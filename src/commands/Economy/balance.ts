@@ -26,11 +26,13 @@ export default class Balance extends AppCommand {
                 .addFields(
                     {
                         name: `${Config.emoji.boarder} ${Config.currency.wallet.name}:`,
-                        value: codeBlock(row.balance.toLocaleString('en-US'))
+                        value: codeBlock(row.balance.toLocaleString('en-US')),
+                        inline: true
                     },
                     {
-                        name: `${Config.emoji.boarder} ${Config.currency.donate.name}`,
-                        value: codeBlock(row.donate.toLocaleString('en-US'))
+                        name: `${Config.emoji.boarder} ${Config.currency.donate.name}:`,
+                        value: codeBlock(row.donate.toLocaleString('en-US')),
+                        inline: true
                     }
                 )
                 .setThumbnail(target.displayAvatarURL())

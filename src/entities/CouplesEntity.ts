@@ -1,7 +1,8 @@
 import BaseEntity from '../structure/client/base/BaseEntity';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Snowflake } from 'discord.js';
 
+@Entity('couples')
 export default class CouplesEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
         id?: number;
@@ -15,6 +16,9 @@ export default class CouplesEntity extends BaseEntity {
     @Column({ default: 0 })
         online!: number;
 
+    @Column({ nullable: true })
+        roomName!: string;
+
     @Column()
         createdTimestamp!: number;
 
@@ -22,5 +26,5 @@ export default class CouplesEntity extends BaseEntity {
         notificationTimestamp!: number;
 
     @Column()
-        extendTimestamp!: number;
+        payTimestamp!: number;
 }

@@ -5,6 +5,7 @@ import { request } from 'undici';
 import drawRound from '../../modules/Profile/Render/DrawRound';
 import IUserStats from '../../structure/interfaces/profile/UserStats';
 import { Utils } from '#structure';
+import ProfileColors from '../../structure/utils/ProfileColors';
 
 export default class ProfileRender {
     public interaction: CommandInteraction<'cached'>;
@@ -20,7 +21,14 @@ export default class ProfileRender {
 
         GlobalFonts.registerFromPath(path.resolve('assets/profile/fonts', 'Raleway-Bold.ttf'), 'Raleway');
         GlobalFonts.registerFromPath(path.resolve('assets/profile/fonts', 'Highliner regular.otf'), 'Highliner');
-    }       
+    }
+
+    public get textColor() {
+        return ProfileColors[this.user.profile].text;
+    }
+    public get progressColor() {
+        return ProfileColors[this.user.profile].progress;
+    }
 
     public async render() {
         this.canvas = createCanvas(2560, 1440);
@@ -40,7 +48,7 @@ export default class ProfileRender {
         this._drawLevel();
         this._drawLevelBar();
         this._drawExpBar(this.user.exp, 4000);
-        // Couple
+        // Love
         if (this.user.couple) {
             await this._drawCouple();
         }
@@ -96,11 +104,11 @@ export default class ProfileRender {
         this.context.beginPath();
         this.context.arc(cx, cy, (size / 2) + (borderWidth / 2), 0, Math.PI * 2, true);
         this.context.closePath();
-        this.context.shadowColor = '#8C8C8C';
+        this.context.shadowColor = this.textColor;
         this.context.shadowBlur = 104.832;
         this.context.shadowOffsetX = 0;
         this.context.shadowOffsetY = 0;
-        this.context.strokeStyle = '#8C8C8C';
+        this.context.strokeStyle = this.textColor;
         this.context.lineWidth = borderWidth;
         this.context.stroke();
         this.context.restore();
@@ -169,7 +177,7 @@ export default class ProfileRender {
         const likes = this.user.likes.toString();
         const dislikes = this.user.dislikes.toString();
 
-        this.context.fillText(likes, 888 + 75.39, 220 + fontSize);
+        this.context.fillText(likes, 860 + 75.39, 220 + fontSize);
         this.context.fillText(dislikes, 1581.88 + 75.39, 213 + fontSize);
     }
 
@@ -183,13 +191,14 @@ export default class ProfileRender {
         const donateCurrency = this.user.donateCurrency.toString();
 
         this.context.fillText(standardCurrency, 417 + 164, 281.71 + fontSize);
-        this.context.fillText(donateCurrency, 1991.74 + 160, 281.71 + fontSize);
+        this.context.textAlign = 'left';
+        this.context.fillText(donateCurrency, 1830 + 160, 281.71 + fontSize);
     }
 
     private _drawLevel() {
         const fontSize = 265.24;
         this.context.font = `400 ${fontSize}px Highliner`;
-        this.context.fillStyle = '#8C8C8C';
+        this.context.fillStyle = this.textColor;
         this.context.textAlign = 'center';
 
         const level = this.user.lvl.toString();
@@ -203,7 +212,7 @@ export default class ProfileRender {
     private _drawLevelBar() {
         const fontSize = 120.56;
         this.context.font = `400 ${fontSize}px Highliner`;
-        this.context.fillStyle = '#8C8C8C';
+        this.context.fillStyle = this.progressColor;
         this.context.textAlign = 'center';
 
         const lastLvl = this.user.lvl.toString();
@@ -229,7 +238,7 @@ export default class ProfileRender {
         const endX = startX + progressWidth;
 
         this.context.save();
-        this.context.strokeStyle = '#8C8C8C';
+        this.context.strokeStyle = this.textColor;
         this.context.lineWidth = lineWidth;
 
         this.context.translate(startX, startY);
@@ -271,7 +280,7 @@ export default class ProfileRender {
         this.context.stroke();
 
         // маленький
-        this.context.fillStyle = '#8C8C8C';
+        this.context.fillStyle = this.textColor;
         this.context.beginPath();
         this.context.arc(144.5453 + x, 1275.5463, 7.6205, 0, Math.PI * 2);
         this.context.fill();
@@ -286,7 +295,7 @@ export default class ProfileRender {
         if (this.user.profile === 'CLOUD') {
             this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
         } else {
-            this.context.drawImage(image, 0, 925, 716 / 1.3, 697 / 1.3);
+            this.context.drawImage(image, 0, 923, 716 / 1.3, 697 / 1.3);
         }
     }
 }

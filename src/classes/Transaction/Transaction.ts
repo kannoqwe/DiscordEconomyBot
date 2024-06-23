@@ -21,21 +21,18 @@ export default class Transaction {
 
     static async performTransaction(type: 'withdraw' | 'award' | 'set', options: ITransaction) {
         const row = await UserEntity.findOrCreate({ userId: options.userId });
-        let newBalance: number;
         switch (type) {
             case 'award':
-                newBalance = row.balance + options.amount;
+                await row.update({ balance: row.balance + options.amount });
                 break;
             case 'withdraw':
-                newBalance = row.balance - options.amount;
+                await row.update({ balance: row.balance - options.amount });
                 break;
             case 'set':
-                newBalance = options.amount;
+                await row.update({ balance: options.amount });
                 break;
         }
-        row.balance = newBalance;
 
-        await row.save();
         await TransactionEntity.create({
             userId: options.userId,
             type: options.type,

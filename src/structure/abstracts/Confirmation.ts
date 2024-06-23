@@ -57,7 +57,6 @@ export default abstract class Confirmation {
 
         collector.on('collect', async (int: ButtonInteraction) => {
             await int.deferUpdate();
-            this.interaction = int;
             switch (int.customId) {
                 case 'accept':
                     await this.doSuccessfully(...args);

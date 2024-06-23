@@ -1,6 +1,7 @@
 import TransactionEntity from '#entities/TransactionEntity';
 import { Snowflake } from 'discord.js';
 import { Config } from '#structure';
+import TransactionsTypes from '../../types/TransactionsType';
 
 export default function (row: TransactionEntity) {
     const { amount, type, additional, operationType, time } = row;
@@ -8,7 +9,7 @@ export default function (row: TransactionEntity) {
     return `**${operation} ${amount} ${Config.currency.wallet.emoji}** — <t:${time}:f>\n${convertText(type, additional)}\n`;
 }
 
-const convertText = (type: string, additional: Snowflake | null) => {
+const convertText = (type: TransactionsTypes, additional: Snowflake | null) => {
     switch (type) {
         case 'TIMELY':
             return 'Временная награда';
@@ -32,6 +33,8 @@ const convertText = (type: string, additional: Snowflake | null) => {
             return `Проигрыш в дуэли против <@${additional}>`;
         case 'PROLE_GIVE':
             return `Выдали роль <@${additional}>`;
+        case 'COUPLE_CREATE':
+            return `Создание брака с <@${additional}>`;
         default:
             return 'Неизвестно';
     }
