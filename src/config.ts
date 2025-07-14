@@ -2,7 +2,7 @@ import { ButtonStyle } from 'discord.js';
 
 export default {
     prefix: '!',
-    token: 'OTg4MTc4MDc5MDUyNjA3NTI4.GVXQYQ.tm2sY37c6ipVdTK1AS8WVGi841SoTQVyO_W6Iw',
+    token: '',
 
     // Айди сервера
     guild: '1042175247241191584',
