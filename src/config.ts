@@ -10,11 +10,11 @@ export default {
     developers: ['393722994393874441'],
 
     database : {
-        host: '62.109.11.15',
+        host: '',
         port: 3306,
-        database: 'ever',
-        username: 'kannoqwe',
-        password: 'qwekannozxc'
+        database: '',
+        username: '',
+        password: ''
     },
 
     emoji: {
